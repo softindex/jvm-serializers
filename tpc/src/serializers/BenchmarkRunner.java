@@ -4,19 +4,23 @@ import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
 import serializers.capnproto.CapNProto;
 import serializers.colfer.Colfer;
-import serializers.datakernel.DataKernelSerializer;
+import serializers.datakernel.DataKernelSerializerBase;
+import serializers.datakernel.DataKernelSerializerSpeed;
 import serializers.flatbuffers.FlatBuffers;
 import serializers.jackson.*;
-import serializers.javaxjson.*;
+import serializers.javaxjson.JavaxJsonStreamGlassfish;
+import serializers.javaxjson.JavaxJsonTreeGlassfish;
 import serializers.json.*;
 import serializers.kryo.Kryo;
-import serializers.msgpack.MsgPack;
 import serializers.protobuf.Protobuf;
 import serializers.protobuf.ProtobufJson;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
 import serializers.wobly.Wobly;
-import serializers.xml.*;
+import serializers.xml.ExiExificient;
+import serializers.xml.XmlJavolution;
+import serializers.xml.XmlStax;
+import serializers.xml.XmlXStream;
 
 /**
  * Full test of various codecs, using a single <code>MediaItem</code>
@@ -42,8 +46,8 @@ public class BenchmarkRunner extends MediaItemBenchmark
         Kryo.register(groups);
         FastSerialization.register(groups);
         Wobly.register(groups);
-        JBossSerialization.register(groups);
-        JBossMarshalling.register(groups);
+//        JBossSerialization.register(groups);
+//        JBossMarshalling.register(groups);
 // 06-May-2013, tatu: Fails on basic Java7, mismatch with Unsafe; commented out
 //        Obser.register(groups);
 
@@ -59,7 +63,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // 01-Oct-2014: MsgPack implementation uses questionable technique as well: instead of using Maps (name/value),
         //    uses arrays, presumes ordering (and implied schema thereby) -- not inter-operable with most non-Java MsgPack
         //    usage, and basically seems to optimize for benchmarks instead of reflecting real usage.
-        MsgPack.register(groups);
+//        MsgPack.register(groups);
         JacksonCBORDatabind.register(groups);
         JacksonProtobufDatabind.register(groups);
 
@@ -104,16 +108,16 @@ public class BenchmarkRunner extends MediaItemBenchmark
 //        ProtostuffSmile.register(groups);
         // BSON is JSON-like format with extended datatypes
         MongoDB.register(groups);
-
-        // XML-based formats; first textual XML
-        JaxbAalto.register(groups);
-        Jaxb.register(groups);
+//
+//        // XML-based formats; first textual XML
+//        JaxbAalto.register(groups);
+//        Jaxb.register(groups);
         XmlStax.register(groups, true, true, false); // woodstox/aalto/-
         XmlXStream.register(groups);
         JacksonXmlDatabind.register(groups);
         XmlJavolution.register(groups);
-
-        // Then binary XML; Fast Infoset, EXI
+//
+//        // Then binary XML; Fast Infoset, EXI
         XmlStax.register(groups, false, false, true); // -/-/fast-infoset
         ExiExificient.register(groups);
 
@@ -129,6 +133,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         FlatBuffers.register(groups);
         CapNProto.register(groups);
         Colfer.register(groups);
-        DataKernelSerializer.register(groups);
+        DataKernelSerializerBase.register(groups);
+        DataKernelSerializerSpeed.register(groups);
     }
 }
